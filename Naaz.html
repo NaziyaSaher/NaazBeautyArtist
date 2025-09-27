@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Naaz Art & Beauty — Booking Form</title>
+  <style>
+    :root{--accent:#B76E79;--muted:#666;--card:#fff;--bg:#f7f7f9}
+    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    body{margin:0;background:var(--bg);color:#111;padding:24px}
+    .container{max-width:900px;margin:0 auto}
+    .card{background:var(--card);border-radius:14px;padding:22px;box-shadow:0 6px 20px rgba(15,15,15,0.06)}
+    h1{margin:0 0 8px;font-size:20px}
+    p.lead{margin:0 0 18px;color:var(--muted)}
+    form .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    label{display:block;font-size:13px;margin-bottom:6px;color:#222}
+    input[type=text],input[type=email],input[type=tel],select,textarea,input[type=date],input[type=time]{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e9;background:#fff}
+    textarea{min-height:100px;resize:vertical}
+    .full{grid-column:1/3}
+    .actions{display:flex;gap:10px;align-items:center}
+    button.primary{background:var(--accent);color:#fff;border:0;padding:10px 16px;border-radius:10px;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid #ddd;padding:9px 14px;border-radius:10px;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    .toast{position:fixed;right:20px;bottom:20px;background:#111;color:#fff;padding:12px 16px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.2);display:none}
+    @media(max-width:720px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Book an Appointment — Naaz Art & Beauty</h1>
+      <p class="lead">Mehndi Artist & Makeup Expert • Bidar & Hyderabad • 4+ years • 2000+ happy clients
+      </p>
+
+      <form id="bookingForm" class="mt-4" autocomplete="off">
+        <div class="grid">
+          <div>
+            <label for="name">Full Name *</label>
+            <input id="name" name="name" type="text" placeholder="Your full name" required />
+          </div>
+
+          <div>
+            <label for="phone">Phone / WhatsApp *</label>
+            <input id="phone" name="phone" type="tel" placeholder="e.g. +91 98xxxxxxxx" required />
+          </div>
+
+          <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" />
+          </div>
+
+          <div>
+            <label for="service">Service *</label>
+            <select id="service" name="service" required>
+              <option value="">Select a service</option>
+              <option>Bridal Mehndi</option>
+              <option>Party / Siders Mehndi</option>
+              <option>Bridal Makeup</option>
+              <option>Party Makeup</option>
+              <option>Combination Package (Mehndi + Makeup)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="date">Preferred Date *</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+
+          <div>
+            <label for="time">Preferred Time</label>
+            <input id="time" name="time" type="time" />
+          </div>
+
+          <div class="full">
+            <label for="location">Event Location *</label>
+            <input id="location" name="location" type="text" placeholder="City / Venue / Address" required />
+          </div>
+
+          <div class="full">
+            <label for="details">Additional Details</label>
+            <textarea id="details" name="details" placeholder="Any reference, number of guests, special requests..."></textarea>
+          </div>
+
+          <div>
+            <label for="image">Upload Reference Image (optional)</label>
+            <input id="image" name="image" type="file" accept="image/*" />
+            <div id="preview" class="file-preview" aria-hidden="true"></div>
+          </div>
+
+          <div>
+            <label for="budget">Estimated Budget (optional)</label>
+            <input id="budget" name="budget" type="text" placeholder="₹ (approx.)" />
+          </div>
+
+          <div class="full">
+            <label>
+              <input id="consent" name="consent" type="checkbox" required />
+              I agree to be contacted for booking confirmation and updates.
+            </label>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+          <div class="small">Follow our portfolio on Instagram: <a href="https://instagram.com/hena_glow_by_me" target="_blank">@hena_glow_by_me</a></div>
+          <div class="actions">
+            <button type="button" class="ghost" id="whatsappBtn">Book via WhatsApp</button>
+            <button type="submit" class="primary">Send Booking Request</button>
+          </div>
+        </div>
+      </form>
+
+      <div style="margin-top:18px;text-align:center">
+        <p>✨ View full portfolio & client samples on Instagram ✨</p>
+        <a href="https://instagram.com/hena_glow_by_me" target="_blank" style="color:var(--accent);font-weight:bold">@hena_glow_by_me</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Message sent!</div>
+
+  <script>
+    const form = document.getElementById('bookingForm');
+    const toast = document.getElementById('toast');
+    const imageInput = document.getElementById('image');
+    const preview = document.getElementById('preview');
+    const whatsappBtn = document.getElementById('whatsappBtn');
+
+    // Image preview
+    imageInput.addEventListener('change', (e) => {
+      preview.innerHTML = '';
+      const file = e.target.files[0];
+      if (!file) return;
+      const img = document.createElement('img');
+      img.alt = 'Reference image';
+      img.src = URL.createObjectURL(file);
+      preview.appendChild(img);
+      preview.setAttribute('aria-hidden', 'false');
+    });
+
+    // Toast helper
+    function showToast(msg='Saved'){
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(()=> toast.style.display = 'none', 3500);
+    }
+
+    // WhatsApp quick book
+    whatsappBtn.addEventListener('click', ()=>{
+      const name = encodeURIComponent(document.getElementById('name').value || 'Client');
+      const phone = encodeURIComponent(document.getElementById('phone').value || '');
+      const service = encodeURIComponent(document.getElementById('service').value || '');
+      const date = encodeURIComponent(document.getElementById('date').value || '');
+      const msg = `Hi Naaz Art,%0A%0AI'd like to book: %0AName: ${name}%0APhone: ${phone}%0AService: ${service}%0APreferred date: ${date}%0A--%0A(Shared from website)`;
+      // Replace with your WhatsApp business number
+      const waNumber = '8073631292';
+      const waUrl = `https://wa.me/${waNumber}?text=${msg}`;
+      window.open(waUrl, '_blank');
+    });
+
+    // Form submit (mock)
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const data = new FormData(form);
+      showToast('Booking request sent!');
+      form.reset();
+      preview.innerHTML = '';
+      try{
+        const summary = `Booking request:\nName: ${data.get('name')}\nPhone: ${data.get('phone')}\nService: ${data.get('service')}\nDate: ${data.get('date')}\nLocation: ${data.get('location')}`;
+        await navigator.clipboard.writeText(summary);
+      }catch(e){/* ignore */}
+    });
+  </script>
+</body>
+</html>
